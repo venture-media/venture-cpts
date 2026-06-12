@@ -6,6 +6,7 @@ Simple WordPress plugin that registers three custom post types with category tax
 - **Business Sectors** – with `Sector Categories`
 - **Client Contacts** – with `Contact Categories`
 - **Events** – with `Event Categories`
+- **Traders** – with `Trader Categories`
 
 ## Features
 - Hierarchical categories for each post type
