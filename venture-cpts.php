@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Venture CPTs
  * Plugin URI:        https://github.com/venture-media/venture-cpts
- * Description:       Registers Custom Post Types for Business Sectors, Client Contacts, and Events. Includes hierarchical category taxonomies and pretty permalinks.
- * Version:           0.9.0
+ * Description:       Registers Custom Post Types for Business Sectors, Client Contacts, Events and traders. Includes hierarchical category taxonomies and pretty permalinks.
+ * Version:           0.9.1
  * Author:            Leon de Klerk
  * Author URI:        https://github.com/Leon2332
  * License:           MIT
@@ -13,11 +13,11 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+// Only define once (prevents conflicts if loaded multiple times)
 if ( ! function_exists( 'venture_cpt_business_sectors' ) ) :
 
-// =====================================================
+
 // 1. BUSINESS SECTORS
-// =====================================================
 
 function venture_cpt_business_sectors() {
     register_post_type( 'business_sectors', [
@@ -96,9 +96,8 @@ function venture_business_sectors_permalink( $post_link, $post ) {
 add_filter( 'post_type_link', 'venture_business_sectors_permalink', 10, 2 );
 
 
-// =====================================================
+    
 // 2. CLIENT CONTACTS
-// =====================================================
 
 function venture_cpt_client_contacts() {
     register_post_type( 'client_contacts', [
@@ -177,9 +176,8 @@ function venture_client_contacts_permalink( $post_link, $post ) {
 add_filter( 'post_type_link', 'venture_client_contacts_permalink', 10, 2 );
 
 
-// =====================================================
+    
 // 3. EVENTS
-// =====================================================
 
 function venture_cpt_events() {
     register_post_type( 'events', [
@@ -257,4 +255,84 @@ function venture_events_permalink( $post_link, $post ) {
 }
 add_filter( 'post_type_link', 'venture_events_permalink', 10, 2 );
 
-endif;
+
+
+// 4. TRADERS
+
+function venture_cpt_traders() {
+    register_post_type( 'traders', [
+        'labels' => [
+            'name' => 'Traders',
+            'singular_name' => 'Trader',
+            'add_new' => 'Add Trader',
+            'add_new_item' => 'Add New Trader',
+            'edit_item' => 'Edit Trader',
+            'new_item' => 'New Trader',
+            'view_item' => 'View Trader',
+            'search_items' => 'Search Traders',
+            'not_found' => 'No traders found',
+            'not_found_in_trash' => 'No traders found in Trash',
+            'all_items' => 'All Traders',
+            'menu_name' => 'Traders',
+            'name_admin_bar' => 'Trader'
+        ],
+        'public' => true,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'show_in_rest' => true,
+        'has_archive' => true,
+        'menu_position' => 8,
+        'menu_icon' => 'dashicons-chart-line',
+        'supports' => [ 'title', 'editor', 'thumbnail', 'excerpt', 'revisions' ],
+        'rewrite' => [
+            'slug' => 'traders/%trader_category%',
+            'with_front' => false
+        ]
+    ]);
+}
+add_action( 'init', 'venture_cpt_traders', 0 );
+
+
+function venture_cpt_traders_taxonomy() {
+    $labels = [
+        'name' => 'Trader Categories',
+        'singular_name' => 'Trader Category',
+        'search_items' => 'Search Trader Categories',
+        'all_items' => 'All Trader Categories',
+        'parent_item' => 'Parent Category',
+        'parent_item_colon' => 'Parent Category:',
+        'edit_item' => 'Edit Trader Category',
+        'update_item' => 'Update Trader Category',
+        'add_new_item' => 'Add New Trader Category',
+        'new_item_name' => 'New Trader Category Name',
+        'menu_name' => 'Trader Categories',
+    ];
+
+    register_taxonomy( 'trader_category', [ 'traders' ], [
+        'hierarchical' => true,
+        'labels' => $labels,
+        'show_ui' => true,
+        'show_in_rest' => true,
+        'rewrite' => [
+            'slug' => 'traders',
+            'with_front' => false,
+            'hierarchical' => true
+        ],
+    ]);
+}
+add_action( 'init', 'venture_cpt_traders_taxonomy', 10 );
+
+
+function venture_traders_permalink( $post_link, $post ) {
+    if ( $post->post_type === 'traders' ) {
+        if ( $terms = get_the_terms( $post->ID, 'trader_category' ) ) {
+            $post_link = str_replace( '%trader_category%', array_pop( $terms )->slug, $post_link );
+        } else {
+            $post_link = str_replace( '%trader_category%', 'uncategorized', $post_link );
+        }
+    }
+    return $post_link;
+}
+add_filter( 'post_type_link', 'venture_traders_permalink', 10, 2 );
+
+endif; // End if ! function_exists( 'venture_cpt_business_sectors' )
