@@ -1,12 +1,13 @@
 # Venture CPTs
 
-Simple WordPress plugin that registers three custom post types with category taxonomies and pretty permalinks.
+Simple WordPress plugin that registers five custom post types with category taxonomies and pretty permalinks.
 
 ## Post Types
 - **Business Sectors** – with `Sector Categories`
 - **Client Contacts** – with `Contact Categories`
 - **Events** – with `Event Categories`
 - **Traders** – with `Trader Categories`
+- **Ministries** - with `Ministry Categories`
 
 ## Features
 - Hierarchical categories for each post type
