@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Venture CPTs
  * Plugin URI:        https://github.com/venture-media/venture-cpts
- * Description:       Registers Custom Post Types for Business Sectors, Client Contacts, Events and traders. Includes hierarchical category taxonomies and pretty permalinks.
- * Version:           0.9.1
+ * Description:       Registers Custom Post Types for Business Sectors, Client Contacts, Events, Traders and Ministries. Includes hierarchical category taxonomies and pretty permalinks.
+ * Version:           0.9.2
  * Author:            Leon de Klerk
  * Author URI:        https://github.com/Leon2332
  * License:           MIT
@@ -334,5 +334,85 @@ function venture_traders_permalink( $post_link, $post ) {
     return $post_link;
 }
 add_filter( 'post_type_link', 'venture_traders_permalink', 10, 2 );
+
+
+
+// 5. MINISTRIES
+
+function venture_cpt_ministries() {
+    register_post_type( 'ministries', [
+        'labels' => [
+            'name' => 'Ministries',
+            'singular_name' => 'Ministry',
+            'add_new' => 'Add Ministry',
+            'add_new_item' => 'Add New Ministry',
+            'edit_item' => 'Edit Ministry',
+            'new_item' => 'New Ministry',
+            'view_item' => 'View Ministry',
+            'search_items' => 'Search Ministries',
+            'not_found' => 'No ministries found',
+            'not_found_in_trash' => 'No ministries found in Trash',
+            'all_items' => 'All Ministries',
+            'menu_name' => 'Ministries',
+            'name_admin_bar' => 'Ministry'
+        ],
+        'public' => true,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'show_in_rest' => true,
+        'has_archive' => true,
+        'menu_position' => 9,
+        'menu_icon' => 'dashicons-building',
+        'supports' => [ 'title', 'editor', 'thumbnail', 'excerpt', 'revisions' ],
+        'rewrite' => [
+            'slug' => 'ministries/%ministry_category%',
+            'with_front' => false
+        ]
+    ]);
+}
+add_action( 'init', 'venture_cpt_ministries', 0 );
+
+
+function venture_cpt_ministries_taxonomy() {
+    $labels = [
+        'name' => 'Ministry Categories',
+        'singular_name' => 'Ministry Category',
+        'search_items' => 'Search Ministry Categories',
+        'all_items' => 'All Ministry Categories',
+        'parent_item' => 'Parent Category',
+        'parent_item_colon' => 'Parent Category:',
+        'edit_item' => 'Edit Ministry Category',
+        'update_item' => 'Update Ministry Category',
+        'add_new_item' => 'Add New Ministry Category',
+        'new_item_name' => 'New Ministry Category Name',
+        'menu_name' => 'Ministry Categories',
+    ];
+
+    register_taxonomy( 'ministry_category', [ 'ministries' ], [
+        'hierarchical' => true,
+        'labels' => $labels,
+        'show_ui' => true,
+        'show_in_rest' => true,
+        'rewrite' => [
+            'slug' => 'ministries',
+            'with_front' => false,
+            'hierarchical' => true
+        ],
+    ]);
+}
+add_action( 'init', 'venture_cpt_ministries_taxonomy', 10 );
+
+
+function venture_ministries_permalink( $post_link, $post ) {
+    if ( $post->post_type === 'ministries' ) {
+        if ( $terms = get_the_terms( $post->ID, 'ministry_category' ) ) {
+            $post_link = str_replace( '%ministry_category%', array_pop( $terms )->slug, $post_link );
+        } else {
+            $post_link = str_replace( '%ministry_category%', 'uncategorized', $post_link );
+        }
+    }
+    return $post_link;
+}
+add_filter( 'post_type_link', 'venture_ministries_permalink', 10, 2 );
 
 endif; // End if ! function_exists( 'venture_cpt_business_sectors' )
