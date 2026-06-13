@@ -1,0 +1,78 @@
+/* Venture Events Grid Widget */
+.venture-events-grid {
+    display: grid !important;
+    gap: 30px;
+    width: 100%;
+}
+
+/* Tablet (767px – 1024px) */
+@media only screen and (min-width: 767px) and (max-width: 1024px) {
+    .venture-events-grid.columns-1 {
+        grid-template-columns: 1fr !important;
+    }
+    .venture-events-grid.columns-2,
+    .venture-events-grid.columns-3,
+    .venture-events-grid.columns-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Desktop (1025px and up) */
+@media only screen and (min-width: 1025px) {
+    .venture-events-grid.columns-1 {
+        grid-template-columns: 1fr !important;
+    }
+    .venture-events-grid.columns-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .venture-events-grid.columns-3 {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+    .venture-events-grid.columns-4 {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
+/* Event Item */
+.venture-event-item {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.venture-event-item:hover {
+    transform: translateY(-4px);
+}
+
+/* Image */
+.venture-event-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Content */
+.venture-event-content {
+    padding: 20px;
+}
+
+.venture-event-title {
+    margin: 0 0 12px 0;
+    font-size: 1.25rem;
+    line-height: 1.3;
+}
+
+.venture-event-title a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.venture-event-date {
+    color: #666;
+    font-size: 0.95rem;
+}
