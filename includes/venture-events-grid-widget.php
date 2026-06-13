@@ -5,7 +5,6 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// Only load if Elementor is active
 if ( ! did_action( 'elementor/loaded' ) ) {
     return;
 }
@@ -36,8 +35,14 @@ function venture_register_events_grid_widget() {
             return [ 'general' ];
         }
 
-        protected function register_controls() {
+        /**
+         * Enqueue the widget's CSS file
+         */
+        public function get_style_depends() {
+            return [ 'venture-events-grid-widget' ];
+        }
 
+        protected function register_controls() {
             // === LAYOUT ===
             $this->start_controls_section(
                 'layout_section',
@@ -123,7 +128,6 @@ function venture_register_events_grid_widget() {
                 'order'          => $settings['order'],
             ];
 
-            // Hide past events
             if ( $settings['hide_past_events'] === 'yes' ) {
                 $args['meta_query'] = [
                     [
@@ -150,7 +154,6 @@ function venture_register_events_grid_widget() {
                     $formatted_date = $event_datetime ? date( 'F j, Y \a\t g:i A', strtotime( $event_datetime ) ) : '';
                 ?>
                     <div class="venture-event-item">
-                        
                         <?php if ( has_post_thumbnail() ) : ?>
                             <div class="venture-event-image">
                                 <a href="<?php the_permalink(); ?>">
@@ -170,7 +173,6 @@ function venture_register_events_grid_widget() {
                                 </div>
                             <?php endif; ?>
                         </div>
-
                     </div>
                 <?php endwhile; wp_reset_postdata(); ?>
             </div>
