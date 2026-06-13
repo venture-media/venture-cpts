@@ -1,11 +1,19 @@
 <?php
+/**
+ * Custom Elementor Widget: Event Date & Time
+ */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+
+// Only load if Elementor is active
+if ( ! did_action( 'elementor/loaded' ) ) {
+    return;
+}
 
 add_action( 'elementor/widgets/widgets_registered', 'venture_register_event_date_widget' );
 
 function venture_register_event_date_widget() {
-    // Make sure Elementor is active
+
     if ( ! class_exists( '\Elementor\Widget_Base' ) ) {
         return;
     }
@@ -17,7 +25,7 @@ function venture_register_event_date_widget() {
         }
 
         public function get_title() {
-            return 'Event Date & Time';
+            return __( 'Event Date & Time', 'venture-media' );
         }
 
         public function get_icon() {
@@ -25,14 +33,14 @@ function venture_register_event_date_widget() {
         }
 
         public function get_categories() {
-            return [ 'general' ]; // or create your own category
+            return [ 'general' ];
         }
 
         protected function register_controls() {
             $this->start_controls_section(
                 'content_section',
                 [
-                    'label' => 'Event Date & Time',
+                    'label' => __( 'Event Date & Time', 'venture-media' ),
                     'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
                 ]
             );
@@ -40,7 +48,7 @@ function venture_register_event_date_widget() {
             $this->add_control(
                 'event_datetime',
                 [
-                    'label'       => 'Event Date & Time',
+                    'label'       => __( 'Event Date & Time', 'venture-media' ),
                     'type'        => \Elementor\Controls_Manager::DATE_TIME,
                     'picker_options' => [
                         'enableTime' => true,
@@ -55,18 +63,22 @@ function venture_register_event_date_widget() {
 
         protected function render() {
             $settings = $this->get_settings_for_display();
-            $datetime = $settings['event_datetime'];
+            $datetime = ! empty( $settings['event_datetime'] ) ? $settings['event_datetime'] : '';
 
-            if ( ! empty( $datetime ) ) {
-                // Save to post meta when rendered in editor or frontend
-                if ( is_singular( 'events' ) ) {
-                    update_post_meta( get_the_ID(), '_event_datetime', sanitize_text_field( $datetime ) );
-                }
+            if ( ! $datetime ) {
+                return;
+            }
 
-                // Format and display
-                $timestamp = strtotime( $datetime );
+            // Save to post meta (only when editing an Event)
+            if ( is_singular( 'events' ) && get_post_type() === 'events' ) {
+                update_post_meta( get_the_ID(), '_event_datetime', sanitize_text_field( $datetime ) );
+            }
+
+            // Display formatted date/time
+            $timestamp = strtotime( $datetime );
+            if ( $timestamp ) {
                 echo '<div class="venture-event-datetime">';
-                echo '<strong>Event Date:</strong> ' . esc_html( date( 'F j, Y \a\t g:i A', $timestamp ) );
+                echo esc_html( date( 'F j, Y \a\t g:i A', $timestamp ) );
                 echo '</div>';
             }
         }
@@ -74,4 +86,3 @@ function venture_register_event_date_widget() {
 
     \Elementor\Plugin::instance()->widgets_manager->register( new Venture_Event_Date_Widget() );
 }
-endif;
