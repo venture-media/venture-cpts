@@ -2,13 +2,16 @@
 /**
  * Plugin Name:       Venture CPTs
  * Plugin URI:        https://github.com/venture-media/venture-cpts
- * Description:       Registers Custom Post Types for Business Sectors, Client Contacts, Events (with Elementor date-time widget), Traders and Ministries. Includes hierarchical category taxonomies and pretty permalinks.
- * Version:           0.9.4
+ * Description:       Registers Custom Post Types for Business Sectors, Client Contacts, Events, Traders and Ministries. Includes hierarchical category taxonomies and pretty permalinks.
+ * Version:           0.9.5
  * Author:            Leon de Klerk
  * Author URI:        https://github.com/Leon2332
  * License:           MIT
  * Text Domain:       venture-media
  */
+
+// Define plugin version
+define( 'VENTURE_CPTS_VERSION', '0.9.5' );
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -438,5 +441,19 @@ function venture_load_elementor_widgets() {
     }
 }
 add_action( 'plugins_loaded', 'venture_load_elementor_widgets' );
+
+    
+
+// ENQUEUE STYLES
+
+function venture_enqueue_events_grid_styles() {
+    wp_register_style(
+        'venture-events-grid-widget',
+        plugin_dir_url( __FILE__ ) . 'css/venture-events-grid-widget.css',
+        [],
+        VENTURE_CPTS_VERSION   // ← Plugin version
+    );
+}
+add_action( 'wp_enqueue_scripts', 'venture_enqueue_events_grid_styles' );
 
 endif; // End if ! function_exists( 'venture_cpt_business_sectors' )
