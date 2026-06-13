@@ -15,8 +15,17 @@ Simple WordPress plugin that registers five custom post types with category taxo
 - Gutenberg and REST API ready
 - Clean `venture_` function prefixes
 
+### Elementor Integration
+- **Venture Events Grid** widget:
+  - Display Events with Featured Image, Title, and Event Date
+  - Adjustable number of columns
+  - Sort by event date (newest/oldest first)
+  - Option to hide past events
+- **Event Date & Time** widget with built-in date/time picker
+- Custom `_event_datetime` meta field support for the Events CPT
+
 ## Installation
-1. Copy the `venture-cpts` folder to `wp-content/plugins/`
+1. Upload the **Venture CPTs** plugin to WordPress.
 2. Activate **Venture CPTs** in the WordPress admin
 3. Go to `WordPress admin → Settings → Permalinks` and click **Save Changes** (required for custom permalinks)
 4. Go to `WordPress admin → Elementor → Editor → Settings → General` and check the boxes for the new post types. Then click **Save Changes**.
